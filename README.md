@@ -8,6 +8,7 @@ We used the following technologies to build this project:
 * React
 * Node.js
 * Express
+* Tailwind
 * Docker
 
 ## Installation & Usage
