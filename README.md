@@ -21,6 +21,6 @@ You need to have Docker installed on your machine to run this application. If yo
 
 ## Creators
 * [Saqib Ali](https://github.com/SaqibAMA)
-* [Sajawal Ali](https://github.com/TheSajawal)
+* [Sajawal Ali](https://github.com/Sajawal007)
 
 
