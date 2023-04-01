@@ -1,0 +1,33 @@
+p > a{
+    text-decoration: underline;
+    font-style: italic;
+    color:rgb(223,94,0);
+}
+.rightSection{
+    width: 60vw;
+    height: fit-content;
+}
+.leftSection{
+    height:fit-content
+}
+.rightSection,.leftSection{
+    background-color:  rgb(15,30,55);
+}
+.container{
+    background-color: rgb(44,47,51);
+    width: 100%;
+}
+.personal-text{
+    color: aqua;
+}
+
+@media not all and (min-width:640px){
+    .rightSection{
+        width: 100%;
+        height: fit-content;
+    }
+    .leftSection{
+        width: 100%;
+        height: fit-content;
+    }
+}

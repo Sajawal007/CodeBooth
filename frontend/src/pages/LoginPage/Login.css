@@ -3,7 +3,7 @@
     flex-direction: row;
     justify-content: center;
     height: 100vh;
-    background-color:#EEEEEE;
+    background-color: rgb(44,47,51);
     align-items: center;
     background-image: url('/frame_8.png');
     background-size: 40%;
@@ -45,10 +45,13 @@ form{
         align-items: center;
         height: 100vh;
         width: 100vw;
-        background-color:#EEEEEE;
+        background-color:rgb(44,47,51);
         background-image: none;
     }
     .logo{
         border:none;
+    }
+    form{
+        padding-left: 0px;
     }
 }
