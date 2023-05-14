@@ -1,7 +1,9 @@
 import React from 'react';
 import Heading from '../../components/Heading';
 import NavBar from '../../components/NavBar';
+import axios from 'axios';
 import './ProfileDetails.css'
+
 
 const IDSection = (props) => {
     return (
@@ -14,12 +16,29 @@ const IDSection = (props) => {
 }
 
 const ProfileDetails = (props) => {
+
+    const token = window.localStorage.getItem("token");
+    if (token) {
+        axios.post('http://127.0.0.1:3000/userLogged', { token }).then(res => {
+            if (res.data.status == 'ok') {
+                console.log(res.data.data);
+            }
+            else{
+                window.location.href='./login'
+            }
+        })
+    }
+    else{
+        window.location.href='./login'
+    }
+
+
     return (<>
         <div className="container mx-auto p-10">
             <NavBar />
-            <Heading className="pt-10 text-start" text="Profile Info"/>
+            <Heading className="pt-10 text-start" text="Profile Info" />
             <div className="inner-container flex md:flex-row lg:flex-row max-sm:flex-col p-10 text-offwhite-100">
-                <IDSection username="Roller" level="Regular Member"/>
+                <IDSection username="Roller" level="Regular Member" />
                 <div className="rightSection p-10 rounded-md text-left bg-gray-400 drop-shadow-2xl text-offwhite-100">
                     <p><b>UserName: </b> Roller123</p>
                     <p><b>Email: </b> <a href="mailto:">thatroller123@gmail.com</a></p>
@@ -35,4 +54,4 @@ const ProfileDetails = (props) => {
     </>);
 }
 
-export {ProfileDetails, IDSection};
+export { ProfileDetails, IDSection };
