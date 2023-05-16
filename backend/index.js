@@ -20,12 +20,26 @@ mongoose.connection.on('connected', () => { console.log('Server is up!') });
 mongoose.connection.on('error', (err) => { console.log('Server up err - ', err) });
 
 
-const registerSchema = {
+const UserSchema = {
   email: String,
   username: String,
-  password: String
+  password: String,
+  posts: Number,
+  respect: Number,
+  personal_text: String
 }
-const User = mongoose.model("users", registerSchema);
+
+const PostSchema = {
+  email: String,
+  username: String,
+  title: String,
+  content_: String,
+  votelist: [String],
+}
+
+
+const User = mongoose.model("users", UserSchema);
+const Post = mongoose.model("posts", PostSchema);
 
 api.get("/", (req, res) => {
   res.send("Hello World!");
@@ -33,7 +47,7 @@ api.get("/", (req, res) => {
 
 api.post("/register", async (req, res) => {
 
-  const { email, username, password } = req.body;
+  const { email, username, password} = req.body;
   
   const result = await User.findOne({ email: email });
   if (result) {
@@ -45,6 +59,9 @@ api.post("/register", async (req, res) => {
         email: email,
         username: username,
         password: password,
+        posts: 0,
+        respect: 0,
+        personal_text: "Loyality is everything, without loyality we are nothing",
       })
       const val = await data.save();
       res.send({ status: "ACCOUNT CREATED" })
@@ -97,6 +114,82 @@ api.post('/userLogged', async(req,res)=>{
   }
   catch{}
 })
+
+api.post('/post',async(req,res) => {
+  const {email, username, title, content_, votelist} = req.body;
+
+  const data = new Post({
+      email: email,
+      username: username,
+      title: title,
+      content_: req.body.content_,
+      votelist: votelist
+  })
+
+  // saves the data into mongodb
+  const val = await data.save();
+
+  res.json(val);
+
+})
+
+api.post('/post/addVote/:email/:id',async(req,res) => {
+  const email = req.params.email;
+  const postid = req.params.id;
+  
+  Post.findById(postid)
+  .then((currPost)=>{
+    
+    if(currPost.votelist.includes(email) == false)
+    {
+      currPost.votelist.push(email);
+      Post.findByIdAndUpdate(postid, currPost).then((data)=>{
+      if(data) {
+        res.send("Voted");
+      }
+      else{
+        res.send("voting failed");
+      }}).catch((error) => {res.send("Error inside working")})
+    }
+    else{
+      res.send("Already Voted");
+    }
+  })
+  .catch(error => {
+    res.send("Error updating vote");
+    console.log(error);
+});
+})
+
+api.post('/post/removeVote/:email/:id',async(req,res) => {
+  const email = req.params.email;
+  const postid = req.params.id;
+  
+  Post.findById(postid)
+  .then((currPost)=>{
+    if(currPost.votelist.includes(email) == true)
+    {
+      const idx = currPost.votelist.indexOf(email);
+      currPost.votelist.splice(idx, 1);
+
+      Post.findByIdAndUpdate(postid, currPost).then((data)=>{
+      if(data) {
+        res.send("Deleted");
+      }
+      else{
+        res.send("de-voting failed");
+      }}).catch((error) => {res.send("Error inside working")})
+    }
+    else{
+      res.send("Not Found");
+    }
+  })
+  .catch(error => {
+    res.send("Error updating vote");
+    console.log(error);
+});
+})
+
 
 
 
