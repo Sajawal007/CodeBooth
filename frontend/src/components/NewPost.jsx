@@ -19,6 +19,7 @@ const NewPost = (props) => {
     const [content_,setContent] = useState("");
     
     const handlePost = async (e) =>{
+
         const newPost = {
             email: props.email,
             username: props.username,
@@ -26,10 +27,13 @@ const NewPost = (props) => {
             content_: content_,
             votelist: [props.email]
         };
+        if(title && content_)
+    {
         axios.post('http://127.0.0.1:3000/post', newPost).then((response) => {
             console.log(response)
             props.setNewPost(response.data)
         })
+    }
     }
     return <>
         <div className="container flex flex-row m-5 rounded-md border border-solid" style={{backgroundImage:"url(\"email.svg\")"}}>

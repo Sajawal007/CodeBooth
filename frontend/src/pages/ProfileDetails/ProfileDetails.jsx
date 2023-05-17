@@ -11,17 +11,18 @@ const IDSection = (props) => {
     const arr=[0];
     if(props.level == "Newbie")
     {
-        arr.push(0,0,0);
+        arr.push(0,0);
     }
     else if(props.level== "Regular Member")
     {
-        arr.push(0,0,0,0,0);
+        arr.push(0,0,0,0);
     }
     else if(props.level == "Experienced")
     {
         arr.push(0,0,0,0,0,0,0);
     }
     return (
+        <>
         <div className="leftSection bg-gray-400 p-10 rounded-md drop-shadow-2xl mr-20 mb-10">
             <h1 class="text-2xl font-bold italic">♨ {props.username} ♨ </h1>
             <h1 class="font-bold italic">{props.level}</h1>
@@ -34,7 +35,17 @@ const IDSection = (props) => {
             </div>
             <a href="/"><img className="mt-10" src='/roller.png' height="100rem" width="100rem" /></a>
         </div>
+        </>
     );
+}
+
+const SearchSection = (props) =>{
+    return(<>
+    <div className="leftSection bg-gray-400 p-10 rounded-md drop-shadow-2xl mb-10">
+        <h1 className="text-offwhite-100 text-2xl p-2">Enter Keyword</h1>
+            <input type="text" className='border-solid border-2 border-offwhite text-black' onChange={(e)=>props.setSearchKey(e.target.value)}/>
+        </div>
+        </>)
 }
 
 const decideRank = (respect) => {
@@ -166,4 +177,4 @@ const ProfileDetails = (props) => {
     </>);
 }
 
-export { ProfileDetails, IDSection };
+export { ProfileDetails, IDSection, SearchSection};

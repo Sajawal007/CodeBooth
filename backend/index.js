@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 
+
 const api = express();
 const JWT_SECRET = "ha213782vieug238e()gconwisdqs"
 
@@ -29,6 +30,7 @@ const UserSchema = {
   personal_text: String
 }
 
+
 const PostSchema = {
   email: String,
   username: String,
@@ -36,7 +38,6 @@ const PostSchema = {
   content_: String,
   votelist: [String],
 }
-
 
 const User = mongoose.model("users", UserSchema);
 const Post = mongoose.model("posts", PostSchema);
@@ -220,7 +221,19 @@ api.post('/fetchall', async (req, res) => {
     postArr.push(post);
   })
 
-  console.log('called')
+  res.send(postArr);
+
+})
+
+api.post('/fetchallusers', async (req, res) => {
+  const data = await User.find({});
+
+  const postArr = [];
+
+  data.forEach(post => {
+    postArr.push(post);
+  })
+
   res.send(postArr);
 
 })

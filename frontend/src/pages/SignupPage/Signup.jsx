@@ -18,7 +18,12 @@ const Signup = () => {
     const toggleModal = () => {
         setShowModal(!showModal);
     }
-
+    function ValidateEmail(inputText) {
+        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (inputText.match(mailformat)) {
+            return true;
+        }
+    }
 
     const onSubmit = (event) => {
 
@@ -30,12 +35,19 @@ const Signup = () => {
                 username: username,
                 password: password
             }
-            
-            axios.post('http://127.0.0.1:3000/register', newUser)
+
+            if(ValidateEmail(email) == true)
+            {
+                axios.post('http://127.0.0.1:3000/register', newUser)
                 .then(res => {
                     setResponce(res.data.status);
                     toggleModal();
                 })
+            }
+            else{
+                setResponce("Error: BAD EMAIL!!");
+                toggleModal();
+            }
         }
         else{
             setResponce("Error: Please Check Credentials!!");
@@ -74,4 +86,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default Signup;

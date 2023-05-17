@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from './Button';
 import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const signOut = (e) => {
@@ -16,9 +17,43 @@ const NavBar = () => {
             <a href="/">
             <img src='/logo-full.png' width="200rem" height="100rem"/>
             </a>
-            <div className="flex flex-col max-sm:hidden">
-                <a href="/feed" className='text-[#566071] font-bold text-lg tracking-wider'>Feed</a>
+            <div className="flex flex-row">
+            <NavLink to="/feed" activeStyle={{ color: "white" }} 
+            style={({ isActive, isPending }) => {
+                return {
+                  fontStyle: isActive ? "italic" : "",
+                };
+              }}
+            >
+            <div className="flex flex-col max-sm:hidden mr-8">
+                <h className='text-[#566071] font-bold text-lg tracking-wider'>Feed</h>
                 <hr className='mt-4'></hr>
+            </div>
+            </NavLink>
+            <NavLink to="/searchandvote" activeStyle={{ color: "blue" }} 
+            style={({ isActive, isPending }) => {
+                return {
+                  fontStyle: isActive ? "italic" : "",
+                };
+              }}
+            >
+            <div className="flex flex-col max-sm:hidden mr-8">
+            <h className='text-[#566071] font-bold text-lg tracking-wider'>Search&Vote</h>
+                <hr className='mt-4'></hr>
+            </div>
+            </NavLink>
+            <NavLink to="/userslist" activeStyle={{ color: "blue" }} 
+            style={({ isActive, isPending }) => {
+                return {
+                  fontStyle: isActive ? "italic" : "",
+                };
+              }}
+            >
+            <div className="flex flex-col max-sm:hidden">
+            <h className='text-[#566071] font-bold text-lg tracking-wider'>Users</h>
+                <hr className='mt-4'></hr>
+            </div>
+            </NavLink>
             </div>
             <Link to="/login">
             <button>

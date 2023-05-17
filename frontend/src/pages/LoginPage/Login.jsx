@@ -30,7 +30,7 @@ const Login = (props) => {
         if(res.data.status == "OK"){
           console.log(res.data.data);
           window.localStorage.setItem("token", res.data.data);
-          window.location.href = './profiledetails';
+          window.location.href = './feed';
         }
         else if(res.data.status == "Account Doesn\'t Exists")
         {
