@@ -47,8 +47,8 @@ api.get("/", (req, res) => {
 
 api.post("/register", async (req, res) => {
 
-  const { email, username, password} = req.body;
-  
+  const { email, username, password } = req.body;
+
   const result = await User.findOne({ email: email });
   if (result) {
     res.send({ status: 'ALREADY EXISTS' });
@@ -78,16 +78,16 @@ api.post("/login", async (req, res) => {
   try {
     const result = await User.findOne({ email: email, password: password });
     if (result) {
-    
-          const token = jwt.sign({email:result.email}, JWT_SECRET);
-        
-          if(res.status(201)){
-            res.send({status:'OK', data:token});
-          }
-        
+
+      const token = jwt.sign({ email: result.email }, JWT_SECRET);
+
+      if (res.status(201)) {
+        res.send({ status: 'OK', data: token });
+      }
+
     }
     else {
-      res.send({status: 'Account Doesn\'t Exists'});
+      res.send({ status: 'Account Doesn\'t Exists' });
     }
   }
   catch {
@@ -97,97 +97,208 @@ api.post("/login", async (req, res) => {
 })
 
 
-api.post('/userLogged', async(req,res)=>{
-  const {token} = req.body;
+api.post('/userLogged', async (req, res) => {
+  const { token } = req.body;
 
-  try{
+  try {
     const user = jwt.verify(token, JWT_SECRET);
     const email = user.email;
-  
-    User.findOne({email:email})
-    .then((data)=>{
-      res.send({status:"ok", data:data});
-    })
-    .catch(error => {
-      res.send({status: "error", data:error});
-    })
+
+    User.findOne({ email: email })
+      .then((data) => {
+        res.send({ status: "ok", data: data });
+      })
+      .catch(error => {
+        res.send({ status: "error", data: error });
+      })
   }
-  catch{}
+  catch { }
 })
 
-api.post('/post',async(req,res) => {
-  const {email, username, title, content_, votelist} = req.body;
+api.post('/fetchuser/:email', async (req, res) => {
+  const email = req.params.email;
 
-  const data = new Post({
+  const userData = await User.findOne({ email: email })
+
+  if (userData) {
+    res.send(userData);
+  }
+  else {
+    console.log("User not found");
+  }
+
+})
+
+api.post('/fetchuser/:email', async (req, res) => {
+  const email = req.params.email;
+
+  const userData = await User.findOne({ email: email })
+
+  if (userData) {
+    res.send(userData);
+  }
+  else {
+    console.log("User not found");
+  }
+})
+
+api.post('/fetchuserposts/:email', async (req, res) => {
+
+  const email = req.params.email;
+  const data = await Post.find({ email: email });
+
+  const postArr = [];
+
+  data.forEach(post => {
+    postArr.push(post);
+  })
+
+  res.send(postArr);
+})
+
+api.post('/post', async (req, res) => {
+  const { email, username, title, content_, votelist } = req.body;
+  const userData = await User.findOne({ email: email })
+
+  if (userData) {
+
+    userData.posts = userData.posts + 1;
+
+
+
+    await User.findOneAndUpdate({ email: email }, userData)
+
+
+    const data = new Post({
       email: email,
       username: username,
       title: title,
-      content_: req.body.content_,
+      content_: content_,
       votelist: votelist
-  })
+    })
 
-  // saves the data into mongodb
-  const val = await data.save();
 
-  res.json(val);
+
+    // saves the data into mongodb
+    const val = await data.save();
+
+    res.json(val);
+  }
+  else {
+    res.send("bad User")
+  }
+
 
 })
 
-api.post('/post/addVote/:email/:id',async(req,res) => {
+api.post('/post/delete/:email/:id', async (req, res) => {
+  const id = req.params.id;
   const email = req.params.email;
-  const postid = req.params.id;
-  
-  Post.findById(postid)
-  .then((currPost)=>{
-    
-    if(currPost.votelist.includes(email) == false)
-    {
-      currPost.votelist.push(email);
-      Post.findByIdAndUpdate(postid, currPost).then((data)=>{
-      if(data) {
-        res.send("Voted");
+  await Post.findByIdAndDelete(id)
+    .then(async () => {
+      const userData = await User.findOne({ email: email })
+
+      if (userData) {
+
+        userData.posts = userData.posts - 1;
+
+        await User.findOneAndUpdate({ email: email }, userData)
       }
-      else{
-        res.send("voting failed");
-      }}).catch((error) => {res.send("Error inside working")})
-    }
-    else{
-      res.send("Already Voted");
-    }
-  })
-  .catch(error => {
-    res.send("Error updating vote");
-    console.log(error);
-});
+      res.send("Post Deleted!");
+    })
+    .catch(() => {
+      res.send("Post NOT Deleted!");
+    })
 })
 
-api.post('/post/removeVote/:email/:id',async(req,res) => {
+api.post('/fetchall', async (req, res) => {
+  const data = await Post.find({});
+
+  const postArr = [];
+
+  data.forEach(post => {
+    postArr.push(post);
+  })
+
+  console.log('called')
+  res.send(postArr);
+
+})
+
+api.post('/post/addVote/:email/:id', async (req, res) => {
   const email = req.params.email;
   const postid = req.params.id;
-  
-  Post.findById(postid)
-  .then((currPost)=>{
-    if(currPost.votelist.includes(email) == true)
-    {
-      const idx = currPost.votelist.indexOf(email);
-      currPost.votelist.splice(idx, 1);
 
-      Post.findByIdAndUpdate(postid, currPost).then((data)=>{
-      if(data) {
-        res.send("Deleted");
+  Post.findById(postid)
+    .then((currPost) => {
+
+      if (currPost.votelist.includes(email) == false) {
+        currPost.votelist.push(email);
+        Post.findByIdAndUpdate(postid, currPost)
+          .then(async (data) => {
+            if (data) {
+              const userData = await User.findOne({ email: currPost.email })
+
+              if (userData) {
+
+                userData.respect = userData.respect + 1;
+
+                await User.findOneAndUpdate({ email: currPost.email }, userData)
+                res.send("Voted");
+              }
+            }
+            else {
+              res.send("voting failed");
+            }
+          }).catch((error) => { res.send("Error inside working") })
       }
-      else{
-        res.send("de-voting failed");
-      }}).catch((error) => {res.send("Error inside working")})
-    }
-    else{
-      res.send("Not Found");
-    }
-  })
-  .catch(error => {
-    res.send("Error updating vote");
-    console.log(error);
-});
+      else {
+        res.send("Already Voted");
+      }
+    })
+    .catch(error => {
+      res.send("Error updating vote");
+      console.log(error);
+    });
+})
+
+api.post('/post/removeVote/:email/:id', async (req, res) => {
+  const email = req.params.email;
+  const postid = req.params.id;
+
+  function matchID(votee) {
+    return votee != email;
+  }
+  Post.findById(postid)
+    .then((currPost) => {
+      if (currPost.votelist.includes(email) == true) {
+        currPost.votelist = currPost.votelist.filter(matchID);
+
+        Post.findByIdAndUpdate(postid, currPost).then(async (data) => {
+          if (data) {
+            const userData = await User.findOne({ email: currPost.email })
+
+            if (userData) {
+
+              userData.respect = userData.respect - 1;
+
+              await User.findOneAndUpdate({ email: currPost.email }, userData)
+              res.send("Deleted");
+            }
+          }
+          else {
+            res.send("de-voting failed");
+          }
+        }).catch((error) => { res.send("Error inside working") })
+      }
+      else {
+        res.send("Not Found");
+      }
+    })
+    .catch(error => {
+      res.send("Error updating vote");
+      console.log(error);
+    });
 })
 
 

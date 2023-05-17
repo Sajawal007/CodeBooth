@@ -3,6 +3,10 @@ import Button from './Button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const signOut = (e) => {
+    window.localStorage.removeItem("token");
+}
+
 const NavBar = () => {
 
     const [menuClicked, setMenu] = useState(false);
@@ -19,7 +23,7 @@ const NavBar = () => {
             <Link to="/login">
             <button>
                 <div className="flex flex-row bg-black rounded-lg max-sm:hidden">
-                    <Button text="Fin " />
+                    <Button text="Fin " askResponce={signOut}/>
                     <img src='/log_out.svg' height='30rem' width='30rem'></img>
                 </div>
             </button>

@@ -8,7 +8,11 @@ p > a{
     height: fit-content;
 }
 .leftSection{
-    height:fit-content
+    height:fit-content;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .rightSection,.leftSection{
     background-color:  rgb(15,30,55);
