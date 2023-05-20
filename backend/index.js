@@ -130,19 +130,6 @@ api.post('/fetchuser/:email', async (req, res) => {
 
 })
 
-api.post('/fetchuser/:email', async (req, res) => {
-  const email = req.params.email;
-
-  const userData = await User.findOne({ email: email })
-
-  if (userData) {
-    res.send(userData);
-  }
-  else {
-    console.log("User not found");
-  }
-})
-
 api.post('/fetchuserposts/:email', async (req, res) => {
 
   const email = req.params.email;

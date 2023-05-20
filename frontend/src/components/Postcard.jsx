@@ -60,13 +60,13 @@ const Postcard = (props) => {
                 </div>
                 <div className="flex flex-col pl-5 pr-5 pb-5">
                     <p className="mr-2 font-bold text-white">{props.title}</p>
-                    <p className="text-fade_text-100">{props.content}</p>
+                    <p className="text-offwhite-100">{props.content}</p>
                 </div>
             </div>
             {props.deleteMode == "false"  && <div className="vote pr-5">
-                <img src="./triangle.svg" width="20rem" height="20rem" onClick={handleUp}/>
+                <img src="./triangle.svg" width="20px" height="20px" onClick={handleUp}/>
                 <p className="pl-0.5">{votes}</p>
-                <img style={{ rotate: "180deg" }} src="./triangle.svg" width="20rem" height="20rem" onClick={handleDown}/>
+                <img style={{ rotate: "180deg" }} src="./triangle.svg" width="20px" height="20px" onClick={handleDown}/>
             </div> }
             {props.deleteMode == "true"  && <div className="vote pr-5">
                 <img src="./delete.svg" width="20rem" height="20rem" onClick={handleDelete}/>
